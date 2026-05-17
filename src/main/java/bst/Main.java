@@ -1,5 +1,7 @@
 package bst;
 
+import java.util.Scanner;
+
 public class Main {
 
     static final String RESET  = "\u001B[0m";
@@ -11,101 +13,165 @@ public class Main {
     static final String BLUE   = "\u001B[34m";
     static final String PURPLE = "\u001B[35m";
 
-    public static void main(String[] args) {
+    static BST arbol = new BST();
+    static Scanner sc = new Scanner(System.in);
 
+    public static void main(String[] args) {
         banner();
 
-        BST arbol = new BST();
+        int opcion;
+        do {
+            menu();
+            opcion = leerEntero("  Selecciona una opcion: ");
+            System.out.println();
 
-        // FASE 1: Insercion
-        titulo("FASE 1 -- INSERCION DE VALORES");
+            switch (opcion) {
+                case 1: opcionInsertar();     break;
+                case 2: opcionBuscar();       break;
+                case 3: opcionEliminar();     break;
+                case 4: opcionRecorridos();   break;
+                case 5: opcionVerArbol();     break;
+                case 6: opcionInfo();         break;
+                case 7: opcionCargarDemo();   break;
+                case 0:
+                    System.out.println(CYAN + "  Saliendo... Hasta luego." + RESET);
+                    break;
+                default:
+                    System.out.println(RED + "  Opcion invalida. Intenta de nuevo." + RESET);
+            }
 
-        int[] valores = {45, 22, 78, 11, 33, 67, 89, 5, 17, 28, 38, 55, 72, 84, 95};
-        System.out.println(CYAN + "  Insertando:" + RESET);
-        for (int v : valores) {
-            arbol.insert(v);
-            System.out.printf("    insert(%3d) -> arbol con %2d nodo(s)%n",
-                    v, arbol.contarNodos());
+        } while (opcion != 0);
+
+        sc.close();
+    }
+
+    // ─── OPCIONES ─────────────────────────────────────────────────────────────
+
+    static void opcionInsertar() {
+        titulo("INSERTAR VALOR");
+        System.out.print(YELLOW + "  Cuantos valores deseas insertar? " + RESET);
+        int n = leerEntero("");
+        for (int i = 1; i <= n; i++) {
+            int val = leerEntero("  Valor " + i + ": ");
+            boolean existia = arbol.search(val);
+            arbol.insert(val);
+            if (existia) {
+                System.out.println(RED + "  [!] " + val + " ya existe en el arbol (duplicado ignorado)." + RESET);
+            } else {
+                System.out.println(GREEN + "  [+] " + val + " insertado. Total nodos: " + arbol.contarNodos() + RESET);
+            }
         }
-
         System.out.println();
         arbol.imprimirArbol();
-        info("Altura del arbol", arbol.getAltura());
-        info("Total de nodos",   arbol.contarNodos());
-        info("Minimo",           arbol.getMinimo());
-        info("Maximo",           arbol.getMaximo());
+    }
 
-        // FASE 2: Busqueda
-        titulo("FASE 2 -- BUSQUEDA (search)");
-
-        int[] buscar = {33, 72, 100, 5, 60, 95};
-        for (int v : buscar) {
-            boolean encontrado = arbol.search(v);
-            String marca = encontrado ? GREEN + "ENCONTRADO" : RED + "NO EXISTE";
-            System.out.printf("  search(%3d) -> %s%s%n", v, marca, RESET);
+    static void opcionBuscar() {
+        titulo("BUSCAR VALOR");
+        int val = leerEntero("  Valor a buscar: ");
+        boolean encontrado = arbol.search(val);
+        if (encontrado) {
+            System.out.println(GREEN + "\n  ENCONTRADO: " + val + " existe en el arbol." + RESET);
+        } else {
+            System.out.println(RED + "\n  NO EXISTE: " + val + " no esta en el arbol." + RESET);
         }
+    }
 
-        // FASE 3: Recorridos
-        titulo("FASE 3 -- RECORRIDOS DEL ARBOL");
-        System.out.println(YELLOW + "  Explicacion:" + RESET);
-        System.out.println("  InOrder   -> Izq -> Raiz -> Der  (orden ASCENDENTE)");
-        System.out.println("  PreOrder  -> Raiz -> Izq -> Der  (copiar arbol)");
-        System.out.println("  PostOrder -> Izq -> Der -> Raiz  (liberar memoria)");
+    static void opcionEliminar() {
+        titulo("ELIMINAR VALOR");
+        if (arbol.estaVacio()) {
+            System.out.println(RED + "  El arbol esta vacio. Inserta valores primero." + RESET);
+            return;
+        }
+        System.out.println("  Arbol actual:");
+        arbol.recorridoInOrder();
         System.out.println();
+        int val = leerEntero("  Valor a eliminar: ");
+        if (!arbol.search(val)) {
+            System.out.println(RED + "\n  [!] " + val + " no existe en el arbol." + RESET);
+            return;
+        }
+        arbol.delete(val);
+        System.out.println();
+        if (arbol.estaVacio()) {
+            System.out.println(YELLOW + "  El arbol quedo vacio." + RESET);
+        } else {
+            arbol.imprimirArbol();
+        }
+    }
+
+    static void opcionRecorridos() {
+        titulo("RECORRIDOS DEL ARBOL");
+        if (arbol.estaVacio()) {
+            System.out.println(RED + "  El arbol esta vacio. Inserta valores primero." + RESET);
+            return;
+        }
+        System.out.println(CYAN + "  InOrder   (Izq -> Raiz -> Der) = orden ASCENDENTE:" + RESET);
         arbol.recorridoInOrder();
+        System.out.println();
+        System.out.println(CYAN + "  PreOrder  (Raiz -> Izq -> Der) = copiar arbol:" + RESET);
         arbol.recorridoPreOrder();
+        System.out.println();
+        System.out.println(CYAN + "  PostOrder (Izq -> Der -> Raiz) = liberar memoria:" + RESET);
         arbol.recorridoPostOrder();
+    }
 
-        // FASE 4: Eliminacion
-        titulo("FASE 4 -- ELIMINACION (los 3 casos)");
-
-        subtitulo("Caso 1 -- Nodo hoja (sin hijos): eliminar 5");
-        arbol.delete(5);
-        arbol.recorridoInOrder();
-
-        arbol.delete(84);
-        subtitulo("Caso 2 -- Nodo con un hijo: eliminar 89 (hijo derecho: 95)");
-        arbol.delete(89);
-        arbol.recorridoInOrder();
-
-        subtitulo("Caso 3 -- Nodo con dos hijos: eliminar 22");
-        System.out.println("  -> Sucesor in-order de 22 = minimo del sub-arbol derecho");
-        arbol.delete(22);
-        arbol.recorridoInOrder();
-
-        subtitulo("Intento de eliminar valor que NO existe: 999");
-        arbol.delete(999);
-
-        // Estado final
-        titulo("ESTADO FINAL DEL ARBOL");
+    static void opcionVerArbol() {
+        titulo("ESTRUCTURA DEL ARBOL");
+        if (arbol.estaVacio()) {
+            System.out.println(RED + "  El arbol esta vacio." + RESET);
+            return;
+        }
         arbol.imprimirArbol();
         System.out.println();
-        arbol.recorridoInOrder();
-        arbol.recorridoPreOrder();
-        arbol.recorridoPostOrder();
-        info("Nodos restantes", arbol.contarNodos());
-        info("Altura actual",   arbol.getAltura());
+        System.out.printf("  %s%-20s%s -> %s%d%s%n", BOLD, "Total nodos:", RESET, GREEN, arbol.contarNodos(), RESET);
+        System.out.printf("  %s%-20s%s -> %s%d%s%n", BOLD, "Altura:",      RESET, GREEN, arbol.getAltura(),   RESET);
+        System.out.printf("  %s%-20s%s -> %s%d%s%n", BOLD, "Minimo:",      RESET, GREEN, arbol.getMinimo(),   RESET);
+        System.out.printf("  %s%-20s%s -> %s%d%s%n", BOLD, "Maximo:",      RESET, GREEN, arbol.getMaximo(),   RESET);
+    }
 
-        // Complejidad Big-O
+    static void opcionInfo() {
         titulo("COMPLEJIDAD Big-O -- METODO search()");
         System.out.println(PURPLE);
-        System.out.println("  ANALISIS:");
-        System.out.println("  ----------------------------------------------------------");
         System.out.println("  [*] CASO PROMEDIO: O(log n)");
-        System.out.println("      En un BST balanceado, cada comparacion descarta");
-        System.out.println("      la mitad del arbol restante. Con altura h ~ log2(n):");
+        System.out.println("      Cada comparacion descarta la mitad del arbol.");
         System.out.println("      1,000,000 nodos -> max. 20 comparaciones.");
         System.out.println();
         System.out.println("  [*] PEOR CASO: O(n)");
-        System.out.println("      Datos ya ordenados -> arbol degenera a lista enlazada.");
+        System.out.println("      Datos ya ordenados -> arbol degenera a lista.");
         System.out.println("      Hay que recorrer todos los n nodos.");
         System.out.println();
-        System.out.println("  [*] SOLUCION: Usar AVL o Red-Black Tree.");
-        System.out.println("      Garantizan O(log n) en TODOS los casos.");
-        System.out.println("  ----------------------------------------------------------");
+        System.out.println("  [*] SOLUCION: AVL o Red-Black Tree -> O(log n) siempre.");
         System.out.println(RESET);
+    }
 
-        footer();
+    static void opcionCargarDemo() {
+        titulo("CARGAR DATOS DE DEMO");
+        System.out.println(YELLOW + "  Cargando: 45 22 78 11 33 67 89 5 17 28 38 55 72 84 95" + RESET);
+        int[] demo = {45, 22, 78, 11, 33, 67, 89, 5, 17, 28, 38, 55, 72, 84, 95};
+        int insertados = 0;
+        for (int v : demo) {
+            if (!arbol.search(v)) {
+                arbol.insert(v);
+                insertados++;
+            }
+        }
+        System.out.println(GREEN + "  " + insertados + " valores insertados. Total nodos: " + arbol.contarNodos() + RESET);
+        System.out.println();
+        arbol.imprimirArbol();
+    }
+
+    // ─── HELPERS ──────────────────────────────────────────────────────────────
+
+    static int leerEntero(String prompt) {
+        while (true) {
+            System.out.print(BOLD + prompt + RESET);
+            try {
+                String linea = sc.nextLine().trim();
+                return Integer.parseInt(linea);
+            } catch (NumberFormatException e) {
+                System.out.println(RED + "  [!] Ingresa solo numeros enteros." + RESET);
+            }
+        }
     }
 
     static void banner() {
@@ -118,25 +184,27 @@ public class Main {
         System.out.println(RESET);
     }
 
+    static void menu() {
+        System.out.println(CYAN + "  +--------------------------+" + RESET);
+        System.out.println(CYAN + "  |        MENU PRINCIPAL    |" + RESET);
+        System.out.println(CYAN + "  +--------------------------+" + RESET);
+        System.out.println("  " + GREEN  + "[1]" + RESET + " Insertar valor(es)");
+        System.out.println("  " + BLUE   + "[2]" + RESET + " Buscar valor");
+        System.out.println("  " + RED    + "[3]" + RESET + " Eliminar valor");
+        System.out.println("  " + PURPLE + "[4]" + RESET + " Ver recorridos (InOrder / PreOrder / PostOrder)");
+        System.out.println("  " + YELLOW + "[5]" + RESET + " Ver estructura del arbol");
+        System.out.println("  " + CYAN   + "[6]" + RESET + " Informacion Big-O");
+        System.out.println("  " + GREEN  + "[7]" + RESET + " Cargar datos de demo automaticamente");
+        System.out.println("  " + BOLD   + "[0]" + RESET + " Salir");
+        System.out.println();
+        System.out.printf("  Nodos en arbol: %s%d%s%n", GREEN + BOLD, arbol.contarNodos(), RESET);
+        System.out.println();
+    }
+
     static void titulo(String texto) {
         System.out.println();
         System.out.println(CYAN + BOLD + "  +-----------------------------------------------------+");
         System.out.printf( "  |  %-52s|%n", texto);
         System.out.println("  +-----------------------------------------------------+" + RESET);
-    }
-
-    static void subtitulo(String texto) {
-        System.out.println(YELLOW + "\n  >> " + texto + RESET);
-    }
-
-    static void info(String label, int valor) {
-        System.out.printf("  %s%-22s%s -> %s%d%s%n",
-                BOLD, label + ":", RESET, GREEN, valor, RESET);
-    }
-
-    static void footer() {
-        System.out.println(BLUE + "  ==========================================================" + RESET);
-        System.out.println(CYAN + "  Fin de la demostracion -- Estructuras de Datos" + RESET);
-        System.out.println();
     }
 }
