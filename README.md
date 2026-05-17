@@ -12,18 +12,11 @@
 
 Un solo archivo `Main.java` con todo incluido: Nodo, BST y menú interactivo.
 
-##  Ejecutar
+
+Manualmente:
 
 ```bash
-bash compilar.sh
-```
-
-O manualmente:
-
-```bash
-mkdir -p out
-javac -d out src/Main.java
-java -cp out bst.Main
+mkdir -p out && javac -d out src/Main.java && java -cp out bst.Main
 ```
 
 ##  Opciones del menú
