@@ -20,22 +20,22 @@
 
 ## 📋 Descripción
 
-Implementación desde cero (sin librerías nativas de árboles de Java) de un **Árbol Binario de Búsqueda (BST)** que almacena números enteros. El proyecto forma parte de la **Fase 2** del curso de Estructuras de Datos.
+Implementación desde cero (sin librerías nativas de árboles de Java) de un **Árbol Binario de Búsqueda (BST)** que almacena números enteros.
 
-### ¿Qué es un BST?
-
-Un Árbol Binario de Búsqueda es una estructura jerárquica donde:
-- El **hijo izquierdo** de todo nodo contiene valores **menores** que él.
-- El **hijo derecho** de todo nodo contiene valores **mayores** que él.
-- Esta propiedad se cumple recursivamente en todos los sub-árboles.
+### Propiedad BST
 
 ```
-        50
+        45
        /  \
-      30    70
+      22    78
      /  \  /  \
-    20  40 60  80
+    11  33 67  89
+   /  \  ...
+  5   17
 ```
+
+- Hijo izquierdo → valores **menores** que el padre
+- Hijo derecho   → valores **mayores** que el padre
 
 ---
 
@@ -52,8 +52,7 @@ BST-Java/
 │       └── BSTTest.java    ← Pruebas unitarias sin framework
 ├── docs/
 │   └── Fichas_Tecnicas_Estructuras_Arboreas.pdf
-├── compilar.bat            ← Script Windows
-├── compilar.sh             ← Script Linux/Mac
+├── compilar.sh             ← Script Linux/Mac/Codespaces
 ├── .gitignore
 └── README.md
 ```
@@ -81,7 +80,7 @@ CASO 2 — Nodo con un solo hijo:
   El nodo es reemplazado por su único hijo.
 
 CASO 3 — Nodo con dos hijos:
-  Se encuentra el SUCESOR IN-ORDER (mínimo del sub-árbol derecho),
+  Se encuentra el sucesor in-order (mínimo del sub-árbol derecho),
   se copia su valor al nodo actual, y se elimina el sucesor.
 ```
 
@@ -90,77 +89,58 @@ CASO 3 — Nodo con dos hijos:
 ## 🚀 Cómo Compilar y Ejecutar
 
 ### Requisitos
-- **Java JDK 11** o superior instalado
-- Variable de entorno `JAVA_HOME` configurada
+- **Java JDK 11** o superior
 
-### Windows
-```bat
-compilar.bat
-```
-
-### Linux / macOS
+### Opción 1 — Script (recomendado)
 ```bash
 chmod +x compilar.sh
 bash compilar.sh
 ```
 
-### Manual paso a paso
+### Opción 2 — Manual
 ```bash
-# 1. Crear carpeta de salida
+# Crear carpetas de salida
 mkdir -p out/main out/test
 
-# 2. Compilar clases principales
+# Compilar
 javac -d out/main src/main/java/bst/Nodo.java src/main/java/bst/BST.java src/main/java/bst/Main.java
 
-# 3. Ejecutar la demo
+# Ejecutar demo
 java -cp out/main bst.Main
 
-# 4. Compilar y ejecutar pruebas
+# Compilar y ejecutar pruebas
 javac -cp out/main -d out/test src/test/java/bst/BSTTest.java
-java -cp "out/main:out/test" bst.BSTTest    # Linux/Mac
-java -cp "out/main;out/test" bst.BSTTest    # Windows
+java -cp "out/main:out/test" bst.BSTTest
 ```
 
 ---
 
-## 📊 Análisis de Complejidad Big-O
-
-### Método `search(int valor)` — Explicación detallada
+## 📊 Análisis de Complejidad Big-O — método `search()`
 
 ```
 CASO PROMEDIO: O(log n)
-  En un árbol BST balanceado, cada comparación descarta la MITAD
-  del árbol restante. Con n nodos y altura h ≈ log₂(n):
-  
-    n = 1,000,000 nodos → máximo 20 comparaciones
-    n = 1,000,000,000   → máximo 30 comparaciones
-  
-  Esto es porque la altura del árbol crece logarítmicamente.
+  Árbol balanceado: cada comparación descarta la mitad.
+  1,000,000 nodos -> máximo 20 comparaciones.
 
 PEOR CASO: O(n)
-  Si los datos se insertan ya ordenados (ej: 1, 2, 3, 4, 5...),
-  el árbol degenera a una lista enlazada:
-  
-    1 → 2 → 3 → 4 → 5
-  
-  En este caso hay que recorrer todos los n nodos para buscar.
+  Datos ya ordenados -> árbol degenera a lista enlazada.
+  Hay que recorrer todos los n nodos.
 
-SOLUCIÓN: variantes auto-balanceadas (AVL, Red-Black Tree)
-  garantizan O(log n) en TODOS los casos.
+SOLUCIÓN: AVL o Red-Black Tree garantizan O(log n) siempre.
 ```
 
 ---
 
 ## 📄 Fichas Técnicas (Fase 1)
 
-El documento PDF con las 5 fichas técnicas se encuentra en [`docs/Fichas_Tecnicas_Estructuras_Arboreas.pdf`](docs/Fichas_Tecnicas_Estructuras_Arboreas.pdf)
+Documento PDF en [`docs/Fichas_Tecnicas_Estructuras_Arboreas.pdf`](docs/Fichas_Tecnicas_Estructuras_Arboreas.pdf)
 
 Estructuras documentadas:
-- 📘 Árbol Binario de Búsqueda (BST)
-- 📗 Árbol Balanceado AVL
-- 📙 Árbol B / B+
-- 📒 Trie (Árbol de Prefijos)
-- 📕 Heap (Montículo Min/Max)
+- Árbol Binario de Búsqueda (BST)
+- Árbol Balanceado AVL
+- Árbol B / B+
+- Trie (Árbol de Prefijos)
+- Heap (Montículo Min/Max)
 
 ---
 
@@ -172,11 +152,3 @@ Estructuras documentadas:
 | **Carné** | *(tu carné aquí)* |
 | **Curso** | Estructuras de Datos |
 | **Universidad** | Da Vinci de Guatemala |
-| **Año** | 2025 |
-
----
-
-## 📜 Licencia
-
-Proyecto académico — Universidad Da Vinci de Guatemala.  
-Uso educativo únicamente.
