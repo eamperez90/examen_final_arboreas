@@ -5,14 +5,14 @@
 
 > **Curso:** Estructuras de Datos — Universidad Da Vinci de Guatemala
 
-## 📹 Video de Demostración
-> 🎬 **[Ver video en YouTube →](https://youtube.com/tu-enlace-aqui)**
+##  Video de Demostración
+>  **[Ver video en YouTube →](https://youtube.com/tu-enlace-aqui)**
 
-## 📋 Descripción
+##  Descripción
 
 Un solo archivo `Main.java` con todo incluido: Nodo, BST y menú interactivo.
 
-## 🚀 Ejecutar
+##  Ejecutar
 
 ```bash
 bash compilar.sh
@@ -26,7 +26,7 @@ javac -d out src/Main.java
 java -cp out bst.Main
 ```
 
-## 📋 Opciones del menú
+##  Opciones del menú
 
 | Opción | Función |
 |--------|---------|
@@ -39,10 +39,10 @@ java -cp out bst.Main
 | 7 | Cargar datos de demo automáticamente |
 | 0 | Salir |
 
-## 👨‍💻 Autor
+##  Autor
 
 | Campo | Detalle |
 |-------|---------|
-| **Nombre** | *(tu nombre)* |
+| **Nombre** | *(Eddy Alexander Amperez Carranza)* |
 | **Carné**  | *(tu carné)* |
 | **Curso**  | Estructuras de Datos |
